@@ -1,0 +1,80 @@
+#include <Servo.h>
+int data;
+int lm35Pin = A0;
+int servoPin = 3;
+int motorPin1 = 6;
+//int motorPin2 = 5;
+int Fan = 9;
+Servo Servol;
+
+void setup() {
+ Serial.begin(9600);
+ Servol.attach(servoPin);
+ pinMode(motorPin1, OUTPUT);
+ //pinMode(motorPin2, OUTPUT);
+ pinMode(Fan, OUTPUT);
+ pinMode(10, OUTPUT);
+ pinMode(11, OUTPUT);
+ pinMode(12, OUTPUT);
+ pinMode(13, OUTPUT); 
+}
+
+void loop(){
+    int analogValue;
+    float temperature;
+    analogValue = analogRead(lm35Pin);
+    temperature = float(analogValue)/1023;
+    temperature = temperature*500;
+    Serial.print(temperature);
+    Serial.print("\n");
+    delay(100);
+    
+  if(Serial.available() > 0);
+  {
+    data = Serial.read()-'0';
+    
+    //#LED
+    if(data == '1')
+    digitalWrite(10, HIGH);
+    if(data == '0')
+    digitalWrite(10, LOW);
+
+    if(data == '4')
+    digitalWrite(11, HIGH);
+    if(data == '5')
+    digitalWrite(11, LOW);
+
+    if(data == '6')
+    digitalWrite(12, HIGH);
+    if(data == '7')
+    digitalWrite(12, LOW);
+
+    if(data == '8')
+    digitalWrite(13, HIGH);
+    if(data == '9')
+    digitalWrite(13, LOW);
+    
+    //#SERVO
+    if(data == '2')
+    Servol.write(0);
+    delay(150);  
+    if(data == '3')
+    Servol.write(90);
+    delay(150);
+    
+    //#FAN
+    if(data == 'C')
+    analogWrite(Fan, 255);
+    if(data == 'D')
+    analogWrite(Fan, 0);
+
+      /*int speed = Serial.parseInt();
+      if (speed >= 0 && speed <= 255)
+   {
+      analogWrite(motorPin1, speed);
+      delay(2000);  
+   }*/ 
+  }   
+}
+
+ 
